@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CARTO Map Projections</title>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <link rel="shortcut icon" href="http://cartodb.com/assets/favicon.ico" />
+  
+  <style>
+    html, body, #map {
+      height: 100%;
+      padding: 0;
+      margin: 0;
+      font-family: "Open Sans";
+    }
+    #selector_menu{
+      position: absolute;
+      top: 20px;
+      left: 80px;
+      z-index: 9000;
+      width: 498px;
+    }
+
+  </style>
+
+  <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css" />
+  <!-- 
+  <link rel="stylesheet" href="https://cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/3.15/themes/css/cartodb.css" />
+  -->
+</head>
+<body>
+  <div id="map"></div>
+
+  <!-- map projection selector -->
+  <div id='selector_menu'>
+    <select id='selector'>
+      <option value="select_proj" selected>Select Map Projection</option>
+    </select>
+
+  <!-- include cartodb.js library -->
+  <script src="http://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js"></script>
+  <!--
+  <script src="https://cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/3.15/cartodb.js"></script> 
+  -->
+  
+  <!-- Drop your code between the script tags below! -->
+  <script>
+
+    function main() {
+
+      var mapUrl='https://team.carto.com/u/ramirocartodb/api/v2/viz/b1807f06-88be-11e6-9f46-0e05a8b3e3d7/viz.json';
+
+      cartodb.createVis('map', mapUrl)
+      .on('done', function(vis,layers) {
+
+        var land = layers[1].getSubLayer(0);
+
+        var sql = new cartodb.SQL({ user: 'ramirocartodb' });
+
+        // define map projection selector actions
+        var SelectProj = {
+          select_proj: function(){
+            land.setSQL("SELECT * FROM ramirocartodb.ne_50m_land");
+          }
+        }
+
+        sql.execute("SELECT * FROM ramirocartodb.map_proj ORDER BY auth_srid")
+          .done(function(data) {
+
+            for (var i = 0; i < data.total_rows; i++) {
+
+              let j = i;
+              
+              // create map projection selector
+              var srid = data.rows[j].auth_srid;
+              var geogcs = data.rows[j].geogcs
+              $('#selector').append("<option value='p" + srid + "'>" + srid + " - " + geogcs + "</option>");
+
+              //append map projection actions
+              // SelectProj["p" + srid] = function(){
+              //   land.setSQL("SELECT cartodb_id, st_transform(the_geom, " + srid + ") as the_geom_webmercator" + " FROM ramirocartodb.ne_50m_land");
+              // }
+
+            }
+
+          })
+          .error(function(errors) {
+            console.log("some error occurred (1st)");
+          });
+
+
+        $('#selector').change(function() {
+          SelectProj[$(this).val()]();
+        }); 
+
+
+      }).on('error', function() {
+       console.log("some error occurred (2nd)");
+      });   
+
+    }
+
+    window.onload = main; 
+  
+  </script>
+
+</body>
+</html>
