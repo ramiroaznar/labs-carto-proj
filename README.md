@@ -30,6 +30,3 @@ Explore all supported map projections in CARTO.
 3. Build a CartoDB.js application with a dropdown menu in order to select a map projection*.
 
 *Notice that only world projections will work.
-
-
-
