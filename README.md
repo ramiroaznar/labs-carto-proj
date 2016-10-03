@@ -22,7 +22,8 @@ Explore all supported map projections in CARTO.
 	  sr_text[16] AS primem,
 	  sr_text[22] AS unit
 	FROM a
-	``
+	```
+
  * Secondly, create a new dataset from this query. Rename it as `map_proj`.
 
 2. Create a map with the Editor with `ne_50m_land` dataset as the unique layer and a color background as basemap.
