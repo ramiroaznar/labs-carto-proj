@@ -54,7 +54,7 @@
 
           var sql = new cartodb.SQL({ user: 'ramirocartodb' });
 
-          sql.execute("with a as (select * from map_proj where auth_srid <= 102718 order by auth_srid desc limit 22) select * from a order by auth_srid asc")
+          sql.execute("SELECT * FROM map_projs")
             .done(function(data) {
 
               for (var i = 0; i < data.total_rows; i++) {
