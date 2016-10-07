@@ -54,7 +54,7 @@
 
           var sql = new cartodb.SQL({ user: 'ramirocartodb' });
 
-          sql.execute("SELECT * FROM map_projs")
+          sql.execute("SELECT * FROM map_projs ORDER BY auth_srid ASC")
             .done(function(data) {
 
               for (var i = 0; i < data.total_rows; i++) {
