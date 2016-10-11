@@ -20,11 +20,11 @@
         left: 80px;
         z-index: 9000;
         width: 498px;
-        font-family: "Open Sans";
       }
 
       #infobox{
         position: absolute;
+        font-size: 10px;
         top: 75px;
         right: 70px;
         width: 250px;
@@ -47,42 +47,41 @@
     <!-- map projection selector -->
     <div id='selector_menu'>
       <select id='selector'>
-        <option value="select_proj" selected>Select Map Projection</option>
+        <option value="4326" selected>Select Map Projection</option>
       </select>
     </div>
 
     <!-- infobox -->
     <div id ="infobox">
       <div class="infobox-header">
-        <h2 id="geogcs">Map Projection</h2>
+        <h2 id="geogcs">WGS 84 / Pseudo-Mercator</h2>
         <br>
-        <a id="image"></a>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/OpenStreetMap_homepage.png/1200px-OpenStreetMap_homepage.png" width="200" height="auto" id="image" alt="intro">
       </div>
       <div class="infobox-content">
         <h3>Datum</h3>
-        <p id="datum">Datum</p>
+        <p id="datum">WGS 1984</p>
         <h3>Spheroid</h3>
         <p id="spheroid">Spheroid</p>
         <h3>Prime Meridian</h3>
-        <p id="primem">Prime Meridian</p>
+        <p id="primem">Greenwich</p>
         <h3>Unit</h3>
-        <p id="unit">Unit</p>
+        <p id="unit">Meter</p>
         <h3>Creator</h3>
-        <p id="creator">Creator</p>
+        <p id="creator">Google</p>
         <h3>Year</h3>
-        <p id="year">Year</p>
+        <p id="year">2005</p>
         <h3>Type</h3>
-        <p id="type">Type</p>
+        <p id="type">Cylindrical</p>
         <h3>Properties</h3>
-        <p id="properties">Properties</p>
+        <p id="properties">Equidistant</p>
         <br>
-        <p id="notes">Notes</p>
+        <p id="notes">A variation of the Mercator projection, ignoring the ellipticity of Earth for faster computation. The de facto standard for web mapping applications, used by Google Maps, Bing Maps, Mapquest, Mapbox, OpenStreetMap and others.</p>
       </div>
     </div>
 
     <script src="https://cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/3.15/cartodb.js"></script> 
     
-    <!-- Drop your code between the script tags below! -->
     <script>
 
       function main() {
@@ -136,9 +135,11 @@
               var type = data.rows[0].type;
               var properties = data.rows[0].properties;
               var notes = data.rows[0].notes;
+              var img_url = data.rows[0].img_url;
 
               // get infobox elements and set attributes
               $('#geogcs').text(geogcs);
+              // $('#image').attr('src', img_url);
               $('#datum').text(datum);
               $('#primem').text(primem);
               $('#unit').text(unit);
