@@ -23,21 +23,6 @@
         font-family: "Open Sans";
       }
 
-      html, body, #map {
-        height: 100%;
-        padding: 0;
-        margin: 0;
-        font-family: "Open Sans";
-      }
-
-      #selector_menu{
-        position: absolute;
-        top: 20px;
-        left: 80px;
-        z-index: 9000;
-        width: 498px;
-      }
-
       #infobox{
         position: absolute;
         top: 75px;
@@ -74,24 +59,24 @@
         <a id="image"></a>
       </div>
       <div class="infobox-content">
-        <h3 id="datum">Datum</h3>
-        <p>Datum</p>
-        <h3 id="geogcs">Spheroid</h3>
-        <p>Spheroid</p>
-        <h3 id="geogcs">Prime Meridian</h3>
-        <p>Prime Meridian</p>
-        <h3 id="geogcs">Unit</h3>
-        <p>Unit</p>
-        <h3 id="geogcs">Creator</h3>
-        <p>Creator</p>
-        <h3 id="geogcs">Year</h3>
-        <p>Year</p>
-        <h3 id="geogcs">Type</h3>
-        <p>Type</p>
-        <h3 id="geogcs">Properties</h3>
-        <p>Properties</p>
+        <h3>Datum</h3>
+        <p id="datum">Datum</p>
+        <h3>Spheroid</h3>
+        <p id="spheroid">Spheroid</p>
+        <h3>Prime Meridian</h3>
+        <p id="primem">Prime Meridian</p>
+        <h3>Unit</h3>
+        <p id="unit">Unit</p>
+        <h3>Creator</h3>
+        <p id="creator">Creator</p>
+        <h3>Year</h3>
+        <p id="year">Year</p>
+        <h3>Type</h3>
+        <p id="type">Type</p>
+        <h3>Properties</h3>
+        <p id="properties">Properties</p>
         <br>
-        <p id="description">Description</p>
+        <p id="notes">Notes</p>
       </div>
     </div>
 
@@ -120,27 +105,54 @@
 
                 // create map projection selector
                 var srid = data.rows[j].auth_srid;
-                var geogcs = data.rows[j].geogcs
+                var geogcs = data.rows[j].geogcs;
 
-                $('#selector').append("<option value='p" + srid + "'>" + srid + " - " + geogcs + "</option>");
+                // apend map projections
+                $('#selector').append("<option value=" + srid + ">" + srid + " - " + geogcs + "</option>");
 
               }
 
-            })
-            .error(function(errors) {
-              console.log("some error occurred (1st)");
             });
 
-            $(document).on('change', '#selector', function(){
-              var input = $( "#selector option:selected" ).text();
-              var srid = input.split(' ')[0];
-              land.setSQL("SELECT cartodb_id, st_transform(the_geom, " + srid + ") as the_geom_webmercator" + " FROM ramirocartodb.ne_50m_land");
+          $(document).on('change', '#selector', function(){
+
+            // get srid selected
+            var input = $( "#selector option:selected" ).text();
+            var srid = input.split(' ')[0];
+
+            // change visualization
+            land.setSQL("SELECT cartodb_id, st_transform(the_geom, " + srid + ") as the_geom_webmercator" + " FROM ramirocartodb.ne_50m_land");
+            
+            sql.execute("SELECT * FROM ramirocartodb.map_projs WHERE auth_srid =" + srid)
+            .done(function(data) {
+
+              // get map projections attributes
+              var geogcs = data.rows[0].geogcs;
+              var datum = data.rows[0].datum;
+              var primem = data.rows[0].primem;
+              var unit = data.rows[0].unit;
+              var creator = data.rows[0].creator;
+              var year = data.rows[0].year;
+              var type = data.rows[0].type;
+              var properties = data.rows[0].properties;
+              var notes = data.rows[0].notes;
+
+              // get infobox elements and set attributes
+              $('#geogcs').text(geogcs);
+              $('#datum').text(datum);
+              $('#primem').text(primem);
+              $('#unit').text(unit);
+              $('#creator').text(creator);
+              $('#year').text(year);
+              $('#type').text(type);
+              $('#properties').text(properties);
+              $('#notes').text(notes);
+
             });
 
-        }).on('error', function() {
-         console.log("some error occurred (2nd)");
+          });
 
-        });   
+        });
 
       }
 
