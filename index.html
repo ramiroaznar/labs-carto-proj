@@ -15,11 +15,19 @@
       }
       
       #selector_menu{
-        position: absolute;
-        top: 20px;
-        left: 80px;
         z-index: 9000;
-        width: 498px;
+      }
+
+      #infobox{
+        position: absolute;
+        font-size: 10px;
+        top: 100px;
+        left: 20px;
+        width: 450px;
+        height: auto;
+        opacity: 0.9;
+        padding: 5px 10px 5px 10px;
+        background-color: white;
       }
 
     </style>
@@ -32,15 +40,45 @@
     <!-- map div -->
     <div id="map"></div>
 
-    <!-- map projection selector -->
-    <div id='selector_menu'>
-      <select id='selector'>
-        <option value="select_proj" selected>Select Map Projection</option>
-      </select>
+
+
+    <!-- infobox -->
+    <div id ="infobox">
+
+      <!-- map projection selector -->
+      <div id='selector_menu'>
+        <select id='selector'>
+          <option value="4326" selected>Select Map Projection</option>
+        </select>
+      </div>
+
+      <div class="infobox-header">
+        <h2 id="geogcs">WGS 84 / Pseudo-Mercator</h2>
+      </div>
+      <div class="infobox-content">
+        <h3>Datum</h3>
+        <p id="datum">WGS 1984</p>
+        <h3>Spheroid</h3>
+        <p id="spheroid">Spheroid</p>
+        <h3>Prime Meridian</h3>
+        <p id="primem">Greenwich</p>
+        <h3>Unit</h3>
+        <p id="unit">Meter</p>
+        <h3>Creator</h3>
+        <p id="creator">Google</p>
+        <h3>Year</h3>
+        <p id="year">2005</p>
+        <h3>Type</h3>
+        <p id="type">Cylindrical</p>
+        <h3>Properties</h3>
+        <p id="properties">Equidistant</p>
+        <h3>Notes</h3>
+        <p id="notes">A variation of the Mercator projection, ignoring the ellipticity of Earth for faster computation. The de facto standard for web mapping applications, used by Google Maps, Bing Maps, Mapquest, Mapbox, OpenStreetMap and others.</p>
+      </div>
+    </div>
 
     <script src="https://cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/3.15/cartodb.js"></script> 
     
-    <!-- Drop your code between the script tags below! -->
     <script>
 
       function main() {
@@ -54,7 +92,11 @@
 
           var sql = new cartodb.SQL({ user: 'ramirocartodb' });
 
+<<<<<<< HEAD
           sql.execute("SELECT * FROM map_projs ORDER BY auth_srid ASC")
+=======
+          sql.execute("SELECT * FROM ramirocartodb.map_projs ORDER BY auth_srid")
+>>>>>>> master
             .done(function(data) {
 
               for (var i = 0; i < data.total_rows; i++) {
@@ -63,27 +105,54 @@
 
                 // create map projection selector
                 var srid = data.rows[j].auth_srid;
-                var geogcs = data.rows[j].geogcs
+                var geogcs = data.rows[j].geogcs;
 
-                $('#selector').append("<option value='p" + srid + "'>" + srid + " - " + geogcs + "</option>");
+                // apend map projections
+                $('#selector').append("<option value=" + srid + ">" + srid + " - " + geogcs + "</option>");
 
               }
 
-            })
-            .error(function(errors) {
-              console.log("some error occurred (1st)");
             });
 
-            $(document).on('change', '#selector', function(){
-              var input = $( "#selector option:selected" ).text();
-              var srid = input.split(' ')[0];
-              land.setSQL("SELECT cartodb_id, st_transform(the_geom, " + srid + ") as the_geom_webmercator" + " FROM ramirocartodb.ne_50m_land");
+          $(document).on('change', '#selector', function(){
+
+            // get srid selected
+            var input = $( "#selector option:selected" ).text();
+            var srid = input.split(' ')[0];
+
+            // change visualization
+            land.setSQL("SELECT cartodb_id, st_transform(the_geom, " + srid + ") as the_geom_webmercator" + " FROM ramirocartodb.ne_50m_land");
+            
+            sql.execute("SELECT * FROM ramirocartodb.map_projs WHERE auth_srid =" + srid)
+            .done(function(data) {
+
+              // get map projections attributes
+              var geogcs = data.rows[0].geogcs;
+              var datum = data.rows[0].datum;
+              var primem = data.rows[0].primem;
+              var unit = data.rows[0].unit;
+              var creator = data.rows[0].creator;
+              var year = data.rows[0].year;
+              var type = data.rows[0].type;
+              var properties = data.rows[0].properties;
+              var notes = data.rows[0].notes;
+
+              // get infobox elements and set attributes
+              $('#geogcs').text(geogcs);
+              $('#datum').text(datum);
+              $('#primem').text(primem);
+              $('#unit').text(unit);
+              $('#creator').text(creator);
+              $('#year').text(year);
+              $('#type').text(type);
+              $('#properties').text(properties);
+              $('#notes').text(notes);
+
             });
 
-        }).on('error', function() {
-         console.log("some error occurred (2nd)");
+          });
 
-        });   
+        });
 
       }
 
