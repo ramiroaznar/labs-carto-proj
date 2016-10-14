@@ -15,19 +15,15 @@
       }
       
       #selector_menu{
-        position: absolute;
-        top: 20px;
-        left: 80px;
         z-index: 9000;
-        width: 498px;
       }
 
       #infobox{
         position: absolute;
         font-size: 10px;
-        top: 75px;
-        right: 70px;
-        width: 250px;
+        top: 100px;
+        left: 20px;
+        width: 450px;
         height: auto;
         opacity: 0.9;
         padding: 5px 10px 5px 10px;
@@ -44,19 +40,20 @@
     <!-- map div -->
     <div id="map"></div>
 
-    <!-- map projection selector -->
-    <div id='selector_menu'>
-      <select id='selector'>
-        <option value="4326" selected>Select Map Projection</option>
-      </select>
-    </div>
+
 
     <!-- infobox -->
     <div id ="infobox">
+
+      <!-- map projection selector -->
+      <div id='selector_menu'>
+        <select id='selector'>
+          <option value="4326" selected>Select Map Projection</option>
+        </select>
+      </div>
+
       <div class="infobox-header">
         <h2 id="geogcs">WGS 84 / Pseudo-Mercator</h2>
-        <br>
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/OpenStreetMap_homepage.png/1200px-OpenStreetMap_homepage.png" width="200" height="auto" id="image" alt="intro">
       </div>
       <div class="infobox-content">
         <h3>Datum</h3>
@@ -75,7 +72,7 @@
         <p id="type">Cylindrical</p>
         <h3>Properties</h3>
         <p id="properties">Equidistant</p>
-        <br>
+        <h3>Notes</h3>
         <p id="notes">A variation of the Mercator projection, ignoring the ellipticity of Earth for faster computation. The de facto standard for web mapping applications, used by Google Maps, Bing Maps, Mapquest, Mapbox, OpenStreetMap and others.</p>
       </div>
     </div>
@@ -135,11 +132,9 @@
               var type = data.rows[0].type;
               var properties = data.rows[0].properties;
               var notes = data.rows[0].notes;
-              var img_url = data.rows[0].img_url;
 
               // get infobox elements and set attributes
               $('#geogcs').text(geogcs);
-              // $('#image').attr('src', img_url);
               $('#datum').text(datum);
               $('#primem').text(primem);
               $('#unit').text(unit);
