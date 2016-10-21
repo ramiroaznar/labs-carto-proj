@@ -14,21 +14,23 @@
         font-family: "Open Sans";
       }
       
-      #selector_menu{
+      #selector{
         z-index: 9000;
       }
 
       #infobox{
         position: absolute;
-        font-size: 10px;
-        top: 100px;
-        left: 20px;
-        width: 450px;
-        height: auto;
-        opacity: 0.9;
-        padding: 5px 10px 5px 10px;
-        background-color: white;
-      }
+        top: 0;
+        right: 0;
+        bottom: 0;
+        padding: 20px;
+        box-sizing: border-box;
+        background: #fff;
+        opacity: 1;
+        font-size: 12px;
+        box-shadow: 2px 1px 1px rgba(0,0,0,.2);
+        width: 350px;
+          }
 
     </style>
 
@@ -40,17 +42,13 @@
     <!-- map div -->
     <div id="map"></div>
 
-
-
     <!-- infobox -->
     <div id ="infobox">
 
       <!-- map projection selector -->
-      <div id='selector_menu'>
         <select id='selector'>
           <option value="4326" selected>Select Map Projection</option>
         </select>
-      </div>
 
       <div class="infobox-header">
         <h2 id="geogcs">WGS 84 / Pseudo-Mercator</h2>

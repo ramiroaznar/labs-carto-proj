@@ -26,8 +26,10 @@ Explore all supported map projections in CARTO.
 
  * Secondly, create a new dataset from this query. Rename it as `map_proj`.
 
+ * Third, add a new field called `notes` with some comments about each projection from Wikipedia [1].
+
 2. Create a map with the Editor with `ne_50m_land` dataset as the unique layer and a color background as basemap.
 
 3. Build a CartoDB.js application with a dropdown menu in order to select a map projection*.
 
-*Notice that only world projections will work.
+[1] https://en.wikipedia.org/wiki/List_of_map_projections
