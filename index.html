@@ -28,6 +28,15 @@
         background: #fff;
         box-shadow: -2px 1px 1px rgba(0,0,0,.2);
         width: 350px;
+        z-index: 100;
+      }
+
+      .leaflet-control-attribution.leaflet-control {
+        right: 360px!Important;
+      }
+
+      .MainTitle {
+        color: #51DDFE;
       }
 
       .Title {
@@ -61,27 +70,27 @@
       </select>
 
       <div class="infobox-header">
-        <h2 class="geogcs">WGS 84 / Pseudo-Mercator</h2>
+        <h2 class="MainTitle geogcs">WGS 84 / Pseudo-Mercator</h2>
       </div>
       <div class="infobox-content">
-        <h3 class="Title">Datum</h3 class="Title">
-        <p class="datum">WGS 1984</p>
-        <h3 class="Title">Spheroid</h3 class="Title">
-        <p class="spheroid">Spheroid</p>
-        <h3 class="Title">Prime Meridian</h3 class="Title">
-        <p class="primem">Greenwich</p>
-        <h3 class="Title">Unit</h3 class="Title">
-        <p class="unit">Meter</p>
-        <h3 class="Title">Creator</h3 class="Title">
-        <p class="creator">Google</p>
-        <h3 class="Title">Year</h3 class="Title">
-        <p class="year">2005</p>
-        <h3 class="Title">Type</h3 class="Title">
-        <p class="type">Cylindrical</p>
-        <h3 class="Title">Properties</h3 class="Title">
-        <p class="properties">Equidistant</p>
-        <h3 class="Title">Notes</h3 class="Title">
-        <p class="notes">A variation of the Mercator projection, ignoring the ellipticity of Earth for faster computation. The de facto standard for web mapping applications, used by Google Maps, Bing Maps, Mapquest, Mapbox, OpenStreetMap and others.</p>
+        <h3 class="Title">Datum</h3>
+        <p class="js-datum">WGS 1984</p>
+        <h3 class="Title">Spheroid</h3>
+        <p class="js-spheroid">Spheroid</p>
+        <h3 class="Title">Prime Meridian</h3>
+        <p class="js-primem">Greenwich</p>
+        <h3 class="Title">Unit</h3>
+        <p class="js-unit">Meter</p>
+        <h3 class="Title">Creator</h3>
+        <p class="js-creator">Google</p>
+        <h3 class="Title">Year</h3>
+        <p class="js-year">2005</p>
+        <h3 class="Title">Type</h3>
+        <p class="js-type">Cylindrical</p>
+        <h3 class="Title">Properties</h3>
+        <p class="js-properties">Equidistant</p>
+        <h3 class="Title">Notes</h3>
+        <p class="js-notes">A variation of the Mercator projection, ignoring the ellipticity of Earth for faster computation. The de facto standard for web mapping applications, used by Google Maps, Bing Maps, Mapquest, Mapbox, OpenStreetMap and others.</p>
       </div>
     </div>
 
@@ -149,15 +158,15 @@
                   var notes = data.rows[0].notes;
 
                   // get infobox elements and set attributes
-                  $('.geogcs').text(geogcs);
-                  $('.datum').text(datum);
-                  $('.primem').text(primem);
-                  $('.unit').text(unit);
-                  $('.creator').text(creator);
-                  $('.year').text(year);
-                  $('.type').text(type);
-                  $('.properties').text(properties);
-                  $('.notes').text(notes);
+                  $('.js-geogcs').text(geogcs);
+                  $('.js-datum').text(datum);
+                  $('.js-primem').text(primem);
+                  $('.js-unit').text(unit);
+                  $('.js-creator').text(creator);
+                  $('.js-year').text(year);
+                  $('.js-type').text(type);
+                  $('.js-properties').text(properties);
+                  $('.js-notes').text(notes);
                 });
             });
           });
