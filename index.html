@@ -82,6 +82,12 @@
     <script src="https://cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/3.15/cartodb.js"></script> 
 
     <script>
+      function truncate(string){
+        if (string.length > 40) {
+          return string.substring(0, 40) + '…';
+        }
+        return string;
+      };
 
       function main() {
 
@@ -106,8 +112,9 @@
                   var srid = data.rows[j].auth_srid;
                   var geogcs = data.rows[j].geogcs;
 
-                  // apend map projections
-                  $('#selector').append("<option value=" + srid + ">" + srid + " - " + geogcs + "</option>");
+                  var title = truncate(srid + " - " + geogcs);
+
+                  $('#selector').append("<option value=" + srid + ">" + title + "</option>");
                 }
 
               });
