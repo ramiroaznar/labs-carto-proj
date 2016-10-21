@@ -132,7 +132,7 @@
               var srid = input.split(' ')[0];
 
               // change visualization
-              land.setSQL("SELECT cartodb_id, st_transform(the_geom, " + srid + ") as the_geom_webmercator" + " FROM ramirocartodb.ne_50m_land");
+              land.setSQL("SELECT cartodb_id, st_transform(the_geom, " + srid + ") as the_geom_webmercator" + " FROM ramirocartodb.world_borders");
 
               sql.execute("SELECT * FROM ramirocartodb.map_projs WHERE auth_srid =" + srid)
                 .done(function(data) {
