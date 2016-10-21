@@ -5,7 +5,7 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
     <link rel="shortcut icon" href="https://cartodb.com/assets/favicon.ico" />
-    
+
     <style>
       html, body, #map {
         height: 100%;
@@ -13,7 +13,7 @@
         margin: 0;
         font-family: "Open Sans";
       }
-      
+
       #selector{
         z-index: 9000;
       }
@@ -28,9 +28,13 @@
         background: #fff;
         opacity: 1;
         font-size: 12px;
-        box-shadow: 2px 1px 1px rgba(0,0,0,.2);
+        box-shadow: -2px 1px 1px rgba(0,0,0,.2);
         width: 350px;
-          }
+      }
+
+      p {
+        margin: 0 0 0 5px;
+      }
 
     </style>
 
@@ -46,113 +50,106 @@
     <div id ="infobox">
 
       <!-- map projection selector -->
-        <select id='selector'>
-          <option value="4326" selected>Select Map Projection</option>
-        </select>
+      <select id='selector'>
+        <option value="4326" selected>Select Map Projection</option>
+      </select>
 
       <div class="infobox-header">
-        <h2 id="geogcs">WGS 84 / Pseudo-Mercator</h2>
+        <h2 class="geogcs">WGS 84 / Pseudo-Mercator</h2>
       </div>
       <div class="infobox-content">
         <h3>Datum</h3>
-        <p id="datum">WGS 1984</p>
+        <p class="datum">WGS 1984</p>
         <h3>Spheroid</h3>
-        <p id="spheroid">Spheroid</p>
+        <p class="spheroid">Spheroid</p>
         <h3>Prime Meridian</h3>
-        <p id="primem">Greenwich</p>
+        <p class="primem">Greenwich</p>
         <h3>Unit</h3>
-        <p id="unit">Meter</p>
+        <p class="unit">Meter</p>
         <h3>Creator</h3>
-        <p id="creator">Google</p>
+        <p class="creator">Google</p>
         <h3>Year</h3>
-        <p id="year">2005</p>
+        <p class="year">2005</p>
         <h3>Type</h3>
-        <p id="type">Cylindrical</p>
+        <p class="type">Cylindrical</p>
         <h3>Properties</h3>
-        <p id="properties">Equidistant</p>
+        <p class="properties">Equidistant</p>
         <h3>Notes</h3>
-        <p id="notes">A variation of the Mercator projection, ignoring the ellipticity of Earth for faster computation. The de facto standard for web mapping applications, used by Google Maps, Bing Maps, Mapquest, Mapbox, OpenStreetMap and others.</p>
+        <p class="notes">A variation of the Mercator projection, ignoring the ellipticity of Earth for faster computation. The de facto standard for web mapping applications, used by Google Maps, Bing Maps, Mapquest, Mapbox, OpenStreetMap and others.</p>
       </div>
     </div>
 
     <script src="https://cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/3.15/cartodb.js"></script> 
-    
+
     <script>
 
       function main() {
 
         var mapUrl='https://team.carto.com/u/ramirocartodb/api/v2/viz/b1807f06-88be-11e6-9f46-0e05a8b3e3d7/viz.json';
 
-        cartodb.createVis('map', mapUrl)
-        .on('done', function(vis,layers) {
+        cartodb.createVis('map', mapUrl, { search: false, shareable: false })
+          .on('done', function(vis,layers) {
 
-          var land = layers[1].getSubLayer(0);
+            var land = layers[1].getSubLayer(0);
 
-          var sql = new cartodb.SQL({ user: 'ramirocartodb' });
+            var sql = new cartodb.SQL({ user: 'ramirocartodb' });
 
-          sql.execute("SELECT * FROM ramirocartodb.map_projs ORDER BY auth_srid")
+            sql.execute("SELECT * FROM ramirocartodb.map_projs ORDER BY auth_srid")
 
-            .done(function(data) {
+              .done(function(data) {
 
-              for (var i = 0; i < data.total_rows; i++) {
+                for (var i = 0; i < data.total_rows; i++) {
 
-                let j = i;
+                  let j = i;
 
-                // create map projection selector
-                var srid = data.rows[j].auth_srid;
-                var geogcs = data.rows[j].geogcs;
+                  // create map projection selector
+                  var srid = data.rows[j].auth_srid;
+                  var geogcs = data.rows[j].geogcs;
 
-                // apend map projections
-                $('#selector').append("<option value=" + srid + ">" + srid + " - " + geogcs + "</option>");
+                  // apend map projections
+                  $('#selector').append("<option value=" + srid + ">" + srid + " - " + geogcs + "</option>");
+                }
 
-              }
+              });
 
+            $(document).on('change', '#selector', function(){
+
+              // get srid selected
+              var input = $( "#selector option:selected" ).text();
+              var srid = input.split(' ')[0];
+
+              // change visualization
+              land.setSQL("SELECT cartodb_id, st_transform(the_geom, " + srid + ") as the_geom_webmercator" + " FROM ramirocartodb.ne_50m_land");
+
+              sql.execute("SELECT * FROM ramirocartodb.map_projs WHERE auth_srid =" + srid)
+                .done(function(data) {
+
+                  // get map projections attributes
+                  var geogcs = data.rows[0].geogcs;
+                  var datum = data.rows[0].datum;
+                  var primem = data.rows[0].primem;
+                  var unit = data.rows[0].unit;
+                  var creator = data.rows[0].creator;
+                  var year = data.rows[0].year;
+                  var type = data.rows[0].type;
+                  var properties = data.rows[0].properties;
+                  var notes = data.rows[0].notes;
+
+                  // get infobox elements and set attributes
+                  $('.geogcs').text(geogcs);
+                  $('.datum').text(datum);
+                  $('.primem').text(primem);
+                  $('.unit').text(unit);
+                  $('.creator').text(creator);
+                  $('.year').text(year);
+                  $('.type').text(type);
+                  $('.properties').text(properties);
+                  $('.notes').text(notes);
+                });
             });
-
-          $(document).on('change', '#selector', function(){
-
-            // get srid selected
-            var input = $( "#selector option:selected" ).text();
-            var srid = input.split(' ')[0];
-
-            // change visualization
-            land.setSQL("SELECT cartodb_id, st_transform(the_geom, " + srid + ") as the_geom_webmercator" + " FROM ramirocartodb.ne_50m_land");
-            
-            sql.execute("SELECT * FROM ramirocartodb.map_projs WHERE auth_srid =" + srid)
-            .done(function(data) {
-
-              // get map projections attributes
-              var geogcs = data.rows[0].geogcs;
-              var datum = data.rows[0].datum;
-              var primem = data.rows[0].primem;
-              var unit = data.rows[0].unit;
-              var creator = data.rows[0].creator;
-              var year = data.rows[0].year;
-              var type = data.rows[0].type;
-              var properties = data.rows[0].properties;
-              var notes = data.rows[0].notes;
-
-              // get infobox elements and set attributes
-              $('#geogcs').text(geogcs);
-              $('#datum').text(datum);
-              $('#primem').text(primem);
-              $('#unit').text(unit);
-              $('#creator').text(creator);
-              $('#year').text(year);
-              $('#type').text(type);
-              $('#properties').text(properties);
-              $('#notes').text(notes);
-
-            });
-
           });
-
-        });
-
       }
-
-      window.onload = main; 
-    
+window.onload = main;
     </script>
 
   </body>
