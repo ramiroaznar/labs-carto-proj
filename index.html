@@ -35,7 +35,7 @@
         right: 360px!Important;
       }
 
-      .MainTitle {
+      .js-geogcs {
         color: #51DDFE;
       }
 
@@ -70,7 +70,7 @@
       </select>
 
       <div class="infobox-header">
-        <h2 class="MainTitle geogcs">WGS 84 / Pseudo-Mercator</h2>
+        <h2 class="js-geogcs">WGS 84 / Pseudo-Mercator</h2>
       </div>
       <div class="infobox-content">
         <h3 class="Title">Datum</h3>
@@ -141,7 +141,7 @@
               var srid = input.split(' ')[0];
 
               // change visualization
-              land.setSQL("SELECT cartodb_id, st_transform(the_geom, " + srid + ") as the_geom_webmercator" + " FROM ramirocartodb.world_borders");
+              land.setSQL("SELECT cartodb_id, st_transform(the_geom, " + srid + ") as the_geom_webmercator" + " FROM ramirocartodb.ne_50m_land WHERE ST_Area(the_geom_webmercator) > 2000000000");
 
               sql.execute("SELECT * FROM ramirocartodb.map_projs WHERE auth_srid =" + srid)
                 .done(function(data) {
